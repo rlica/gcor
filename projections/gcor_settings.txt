@@ -1,0 +1,15 @@
+Channels=8192
+DetNum=11
+RefFile=L0.0001
+EndFile=L0.0200
+Sweep=150
+Sensitivity=4.0
+MaxChiSq=10
+LEFT | RIGHT
+  30     100
+ 110     180
+ 190     310
+ 320     430
+ 440     570
+ 580     780
+ 790     990
