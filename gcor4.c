@@ -7,7 +7,7 @@
  1. The graphical interface (x11) for gnuplot
  2. The Gnu Scientific Library (GSL)
  
- (Ubuntu) sudo apt-get install gnuplot-x11 gsl-dev
+ (Ubuntu) sudo apt-get install gnuplot-x11 libgsl-dev
  (osx)    sudo port install gnuplot gsl
  
  
@@ -15,7 +15,11 @@
  Compile with: gcc -o gcor4 gcor4.c -lm -lgsl -lgslcblas (linux)
                gcc -o gcor4_osx gcor4.c -lm -L/opt/local/lib -lgsl -lgslcblas (osx)
  
- -----------------------------
+-----------------------------
+Version 1.5 (8 Jun 2018)
+-----------------------------
+-added detStart
+-----------------------------
 Version 1.4 (6 Feb 2014)
 -----------------------------
 -the maximum shift (sweep) changes linearly with the channel (not a fixed value any more)
@@ -59,7 +63,7 @@ int main(int argc, char **argv) {
 
   
   int i, j, k;
-  printf("\n======= GCOR v1.4 - Automatic Gain Correction =======\n\tR. Lica, IFIN-HH, February 2014 \n\n");
+  printf("\n======= GCOR v1.5 - Automatic Gain Correction =======\n\tR. Lica, IFIN-HH, June 2018 \n\n");
   
   
   //Initializing 
@@ -99,7 +103,7 @@ int main(int argc, char **argv) {
   
   //GCOR main code
   
-  for(idet=0; idet<detNum; idet++)
+  for(idet=detStart; idet<detNum; idet++)
   {
     onetime=0;
     printf("\n---------------------\nDetector #%02d\n---------------------\n", idet);
@@ -117,7 +121,8 @@ int main(int argc, char **argv) {
     }
     
     chiTest=testFit(refSpec, Spec);
-  
+    
+    
     if (answer!='a') 
     {
     sprintf(title, "Raw Spectra. ChiSq = %.2lf", chiTest);

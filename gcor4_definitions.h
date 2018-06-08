@@ -3,7 +3,7 @@
 #include<math.h>
 #include <gsl/gsl_multifit.h>
 
-int chNum, detNum, runref, runstop;
+int chNum, detNum, detStart, runref, runstop;
 int sweep, degree=1, maxChiSq;  
 int left[100], right[100], chan[100], width[100];
 char name[20];
@@ -39,7 +39,8 @@ int    initialize() {
     else { printf("ERROR: Cannot create 'gcor_settings.txt'\n"); exit(0); }
     fprintf(settings, \
 "Channels=8192\n\
-DetNum=11\n\
+DetNum=10\n\
+DetStart=0\n\
 RefFile=L0.0001\n\
 EndFile=L0.0200\n\
 Sweep=150\n\
@@ -59,25 +60,27 @@ LEFT | RIGHT\n\
   fscanf(settings, \
 "Channels=%d\n\
 DetNum=%d\n\
+DetStart=%d\n\
 RefFile=%5[^.].%04d\n\
 EndFile=%5[^.].%04d\n\
 Sweep=%d\n\
 Sensitivity=%lf\n\
 MaxChiSq=%d\n\
-LEFT | RIGHT\n", &chNum, &detNum, name, &runref, name, &runstop, &sweep, &sens, &maxChiSq);
+LEFT | RIGHT\n", &chNum, &detNum, &detStart, name, &runref, name, &runstop, &sweep, &sens, &maxChiSq);
   
   // %5[^.] means read at most five characters or until a dot is encountered. google is the best :)
   
   
   printf("------------\nChan\t%d\n\
 DetNum\t%d\n\
+DetStart\t%d\n\
 RefFile\t%2s.%04d\n\
 EndFile\t%2s.%04d\n\
 Sweep\t%d\n\
 Sensitivity=%lf\n\
 MaxChiSq\t%d\n\
 LEFT | RIGHT\n\
-------------\n", chNum, detNum, name, runref, name, runstop, sweep, sens, maxChiSq);
+------------\n", chNum, detNum, detStart, name, runref, name, runstop, sweep, sens, maxChiSq);
 
 
   
