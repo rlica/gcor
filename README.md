@@ -3,6 +3,7 @@ Automatic Gain Correction relative to a reference spectra based on minimised chi
 
 ## Author
 Razvan Lica (IFIN-HH), razvan.lica@nipne.ro
+
 Contributors: C. Costache and N. Marginean (IFIN-HH)
 
 ====
@@ -32,7 +33,6 @@ Contributors: C. Costache and N. Marginean (IFIN-HH)
 Gain Matching between a calibration run and run taken during the experiment because
 the gain changes linearly due to different rates
 
-Compile with:   ```gcc -o gMatch gmatch.c -lm```
 This program will require the following arguments:
   - the calibration coefficients extracted from the calibration runs (.cal / .mcal)
   - a list ( [Det#] [Energy] [Channel] ) from the spectra during the experiment (only one peak for each detector)
