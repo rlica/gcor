@@ -14,11 +14,13 @@
  
  Compile with: gcc -o gcor4 gcor4.c -lm -lgsl -lgslcblas (linux)
                gcc -o gcor4_osx gcor4.c -lm -L/opt/local/lib -lgsl -lgslcblas (osx)
- 
+			   or use the Makefile (thx Nicu)
+			   
 -----------------------------
-Version 1.5 (8 Jun 2018)
+Version 1.5 (8 Jun 2018) - special thanks to C. Costache
 -----------------------------
--added detStart
+-added detStart in the settings file to start from a particular detector.
+-added option 'k' (keep) for over-riding the "recalibration not required" message. 
 -----------------------------
 Version 1.4 (6 Feb 2014)
 -----------------------------
@@ -83,9 +85,9 @@ int main(int argc, char **argv) {
   char answer;
   char title[200];
   FILE * gnuplotPipe  = popen ("gnuplot", "w");
-  FILE * gnuplotPipe2 = popen ("gnuplot", "w");
-  FILE * gnuplotPipe3 = popen ("gnuplot", "w");
-  FILE * gnuplotPipe4 = popen ("gnuplot", "w");
+  FILE * gnuplotPipe2 = gnuplotPipe;  //NM popen ("gnuplot", "w");
+  FILE * gnuplotPipe3 = gnuplotPipe;  //NM popen ("gnuplot", "w");
+  FILE * gnuplotPipe4 = gnuplotPipe;  //NM popen ("gnuplot", "w");
   FILE *fo;
   char outfile[20];
   sprintf(outfile, "gcor.cal");
@@ -125,6 +127,7 @@ int main(int argc, char **argv) {
     
     if (answer!='a') 
     {
+    fprintf(gnuplotPipe,"set multiplot title \"Automatic gain match\" layout 2,2\n");
     sprintf(title, "Raw Spectra. ChiSq = %.2lf", chiTest);
     gnuplot_spec(gnuplotPipe3, refSpec, Spec, title, 1); 
     }
@@ -142,10 +145,7 @@ int main(int argc, char **argv) {
   for (j=low; j<high; j++) smoothSpec[j]=Spec[j];
    
   norm = normalize(refSpec, Spec);
-  deriv(refSpec, Spec, 3);
-  //sprintf(title, "Derivative");                               // Uncomment this lines in order to display 
-  //gnuplot_spec(gnuplotPipe2, refSpec, Spec, title, 3);           //  the derivative spectra
-  
+  deriv(refSpec, Spec, 3);  
   shift(smoothSpec, refSpec, Spec, shData); 
   nData = performFit(shData, &chisq, coeff);
   if (nData == 0) 
@@ -161,10 +161,10 @@ int main(int argc, char **argv) {
     
   }
   
-  if (answer!='a' && cal_again==0) gnuplot(gnuplotPipe, irun[i], idet, shData, nData, chisq, coeff, norm);
+  if (answer!='a' && cal_again==2) gnuplot(gnuplotPipe, irun[i], idet, shData, nData, chisq, coeff, norm);
   coeff[1]+=1;        
   
-  if (cal_again==0)   //performing again the algorithm
+  if (cal_again<3)   //performing again the algorithm
   {
     coeff_old[0]=coeff[0];
     coeff_old[1]=coeff[1];
@@ -195,19 +195,28 @@ int main(int argc, char **argv) {
     
     sprintf(title, "Recalibrated Spectra. ChiSq = %.2lf", chiTest_cal);
     gnuplot_spec(gnuplotPipe4, refSpec, Spec, title, 2);
+  //sprintf(title, "Derivative");                               // Uncomment this lines in order to display 
+  //gnuplot_spec(gnuplotPipe2, refSpec, Spec, title, 3);           //  the derivative spectra
     }
   
   
   
   if (chiTest_cal > chiTest && chiTest_cal<maxChiSq) 
   {
-    fprintf(fo, "%5d%5d%5d%9.3f%10.6f\n", irun[i], idet, 2, 0.0, 1.0);
+    
     if (answer!='a')
     {
       printf("\n%2s#%02d.%04d: Recalibration is not required (cal/raw = %.2lf/%.2lf) \t", name, idet, irun[i], chiTest_cal, chiTest);
-      printf("Going to next? [y]/n/a\t");
+      printf("Going to next? [y]/n/a/k\t");
+      answer = getchar();
+      if (answer=='k') {
+      	writeCal(fo, coeff, irun[i], idet);
+      	}
+      else
+      	fprintf(fo, "%5d%5d%5d%9.3f%10.6f\n", irun[i], idet, 2, 0.0, 1.0);
       answer = getchar();
     }
+    
   }
   
   else if (chiTest_cal>maxChiSq && chiTest>maxChiSq && chiTest/chiTest_cal<2)
@@ -229,13 +238,13 @@ int main(int argc, char **argv) {
       printf("\n%2s#%02d.%04d: Needs improvement (cal/raw = %.2lf/%.2lf) \t", name, idet, irun[i], chiTest_cal, chiTest);
       if (answer!='a')
       {
-	printf("Going to next? [y]/n/a\t");
+		printf("Going to next? [y]/n/a\t");
         answer = getchar();
       }
     }
     else if (answer!='a') 
       {
-	printf("\n%2s#%02d.%04d\t OK (cal/raw = %.2lf/%.2lf)\t", name, idet, irun[i], chiTest_cal, chiTest);
+		printf("\n%2s#%02d.%04d\t OK (cal/raw = %.2lf/%.2lf)\t", name, idet, irun[i], chiTest_cal, chiTest);
         printf("Going to next? [y]/n/a\t");
         answer = getchar();
       }    

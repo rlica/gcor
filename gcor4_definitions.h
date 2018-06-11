@@ -171,8 +171,9 @@ void   polynomialfit(int n, int degree, double *xi, double *yi, double *ei, doub
   int i, j;
   gsl_matrix *X, *cov;
   gsl_vector *y, *w, *c;
-
-  X = gsl_matrix_alloc (n, degree);
+  gsl_multifit_linear_workspace * work; 
+  
+  X = gsl_matrix_alloc ( (size_t) n, (size_t) degree);
   y = gsl_vector_alloc (n);
   w = gsl_vector_alloc (n);
 
@@ -196,8 +197,10 @@ void   polynomialfit(int n, int degree, double *xi, double *yi, double *ei, doub
     }
 
   {
-    gsl_multifit_linear_workspace * work 
-      = gsl_multifit_linear_alloc (n, degree);
+    work = gsl_multifit_linear_alloc ( (const size_t) n, (const size_t) degree);
+    work->n = work->nmax;
+    work->p = work->pmax;
+
     gsl_multifit_wlinear (X, w, y, c, cov,
                           chisq, work);
     gsl_multifit_linear_free (work);
@@ -310,7 +313,7 @@ double chisq(double *spec1, double *spec2, int l1, int l2, int n) { //chisq of t
   for (i=0; i<n; i++)
   {
     c2 += pow(( spec1[l1+i]- spec2[l2+i]), 2);
-    sum+= abs(spec1[l1+i])+abs(spec2[l2+i]);
+    sum+= abs(spec2[l2+i]); //    sum+= abs(spec1[l1+i])+abs(spec2[l2+i]);
   }
   
   return c2/sum;  
@@ -428,7 +431,7 @@ void   gnuplot(FILE * gnuplotPipe, int irun, int idet, struct Data2Fit *shData, 
   
   char title[200], plot[200], labels[200], legend[200];
   sprintf(title, "set title \"DET#%02d RUN#%04d  Chisq=%.2lf  Norm=%.2lf\"", idet, irun, chisq/n, norm);
-  if(degree == 2) sprintf(plot, "plot [0:1500][-%d:%d]'gcor_fit-data.temp' using 1:2:3 with yerrorbars, %lf + %lf*x", sweep, sweep, coeff[0], coeff[1]);
+  if(degree == 2) sprintf(plot, "plot [0:3000][-%d:%d]'gcor_fit-data.temp' using 1:2:3 with yerrorbars, %lf + %lf*x", sweep, sweep, coeff[0], coeff[1]);
   else if(degree == 3) sprintf(plot, "plot 'gcor_fit-data.temp' using 1:2:3 with yerrorbars, %lf + %lf*x + %lf*x*x", coeff[0], coeff[1], coeff[2]);
   else if(degree == 4) sprintf(plot, "plot 'gcor_fit-data.temp' using 1:2:3 with yerrorbars, %lf + %lf*x + %lf*x*x %lf*x*x*x", coeff[0], coeff[1], coeff[2], coeff[3]);
   sprintf(labels, "set xlabel \"Channel\" \n set ylabel \"Shift\"");
@@ -502,15 +505,15 @@ double testFit(double *refSpec, double *Spec) {
   double *refTemp, *Temp, *smoothSpec, chi=0, signif;
   refTemp = calloc(chNum, sizeof(double));
   Temp = calloc(chNum, sizeof(double));
-  smoothSpec = calloc(chNum, sizeof(double));
+  //smoothSpec = calloc(chNum, sizeof(double));
   for (i=low; i<high; i++) { refTemp[i]=refSpec[i]; Temp[i]=Spec[i]; }
   
-  smooth(refTemp, Temp, 3, 15);
-  for (i=low; i<high; i++) smoothSpec[i]=Temp[i];
+  //smooth(refTemp, Temp, 3, 15);
+  //for (i=low; i<high; i++) smoothSpec[i]=Temp[i];
   normalize(refTemp, Temp);
   //deriv(refTemp, Temp, 3);
   
-  chi = chisq (refTemp, Temp, low+100, low+100, high-200);
+  chi = chisq (refSpec, Spec, low+100, low+100, high-200);
     
   
   return chi; 
