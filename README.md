@@ -1,5 +1,6 @@
-# gcor
+# gcor v1.5
 Automatic Gain Correction relative to a reference spectra based on minimised chi sqared (for LaBr3(Ce) detectors).
+
 Details about the code were published in [UPB Sci. Bull. A 78 (2016)](https://www.scientificbulletin.upb.ro/rev_docs_arhiva/rezce9_838206.pdf)
 
 ## Author
@@ -7,19 +8,18 @@ Razvan Lica (IFIN-HH), razvan.lica@nipne.ro
 
 Contributors: C. Costache and N. Marginean (IFIN-HH)
 
-====
-
 
 ## Requirements:
  1. The graphical interface (x11) for gnuplot   
- 2. The Gnu Scientific Library (GSL)   
+ 2. The Gnu Scientific Library (GSL 2)   
  
  * (Ubuntu) `sudo apt-get install gnuplot-x11 libgsl-dev`    
  * (osx)    `sudo port install gnuplot gsl`     
  
 ## Compiling: 
- Use the Makefile (thanks to N. Marginean)
-```make gnu```
+ Use the Makefile 
+ 
+`make gnu` or `make intel` 
   
 ## Usage:
  1. Place the binary calibrated spectra (using GMATCH if needed) from all the runs and all the detectors (GASPware projections) in the same folder
@@ -30,7 +30,7 @@ Contributors: C. Costache and N. Marginean (IFIN-HH)
 
 ## Other tools:
 
-### GMATCH (Gain Matching)
+### gmatch (Gain Matching)
 Gain Matching between a calibration run and run taken during the experiment because
 the gain changes linearly due to different rates
 
@@ -42,7 +42,7 @@ It will output the calibration coefficients as a .cal file.
 *Usage:          ```gmatch LE-152Eu.cal list.dat```
 
 
-### PINT (Polynomial Intersection)
+### pint (Polynomial Intersection)
 Used for GASPWare .mcal files: estimates the coordinate of intersection between calibration polynomials
 in order to establish the correct corresponding fit regions.
 
