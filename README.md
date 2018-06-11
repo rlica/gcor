@@ -1,5 +1,6 @@
 # gcor
 Automatic Gain Correction relative to a reference spectra based on minimised chi sqared (for LaBr3(Ce) detectors)
+Details about the code were published in [UPB Sci. Bull. A 78 (2016)](https://www.scientificbulletin.upb.ro/rev_docs_arhiva/rezce9_838206.pdf)
 
 ## Author
 Razvan Lica (IFIN-HH), razvan.lica@nipne.ro
