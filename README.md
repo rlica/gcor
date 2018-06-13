@@ -41,6 +41,7 @@ It will output the calibration coefficients as a .cal file.
 
 *Usage:          ```gmatch LE-152Eu.cal list.dat```
 
+See 'list.dat' example [here](https://github.com/rlica/gcor/blob/master/list.dat)
 
 ### pint (Polynomial Intersection)
 Used for GASPWare .mcal files: estimates the coordinate of intersection between calibration polynomials
@@ -48,3 +49,4 @@ in order to establish the correct corresponding fit regions.
 
 *Usage:          ```pint4 file.mcal```
 
+See '.mcal' example [here](https://github.com/rlica/gcor/blob/master/L-Energy.mcal)
