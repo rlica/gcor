@@ -10,21 +10,24 @@ gcc: all
 intel: CC  = icc 
 intel: all
 
+############################### OSX flags
+#INCLUDES      = -I/opt/local/include
+#LIBS          = -L/opt/local/lib -lgsl -lgslcblas
 
-CFLAGS        = 
-INCLUDES      = -I/opt/local/include
-LIBS          = -L/opt/local/lib -lgsl -lgslcblas
+############################### LINUX flags
+INCLUDES      = 
+LIBS        = -lm -lgsl -lgslcblas
 
 all:: list gcor4 gmatch pint4
 
 gcor4: 
-	 $(CC)  -o $@   $@.c  $(CFLAGS) $(INCLUDES) $(LIBS)
+	 $(CC)  -o $@   $@.c  $(INCLUDES) $(LIBS)
 
 gmatch: 
-	 $(CC)  -o $@  $@.c $(CFLAGS) $(INCLUDES) $(LIBS)
+	 $(CC)  -o $@  $@.c $(INCLUDES) $(LIBS)
 
 pint4: 
-	 $(CC)  -o $@   $@.c  $(CFLAGS) $(INCLUDES) $(LIBS)
+	 $(CC)  -o $@   $@.c  $(INCLUDES) $(LIBS)
 
 clean:
 	rm -f *.o gcor4 gmatch pint4
