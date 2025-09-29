@@ -79,6 +79,7 @@ int main(int argc, char **argv)
   int nData = 0;
   double coeff[degree], coeff_old[degree], chisq, norm;
   char answer;
+  char input[10];
   char title[200];
   FILE *gnuplotPipe = popen("gnuplot", "w");
   FILE *gnuplotPipe2 = gnuplotPipe; // NM popen ("gnuplot", "w");
@@ -155,7 +156,8 @@ int main(int argc, char **argv)
           if (answer != 'a')
           {
             printf("Going to next? [y]/n/a\t");
-            answer = getchar();
+            fgets(input, sizeof(input), stdin);
+            answer = input[0];
           }
           goto skip;
         }
@@ -206,14 +208,14 @@ int main(int argc, char **argv)
           {
             printf("\n%2s#%02d.%04d: Recalibration is not required (cal/raw = %.2lf/%.2lf) \t", name, idet, irun[i], chiTest_cal, chiTest);
             printf("Going to next? [y]/n/a/k\t");
-            answer = getchar();
+            fgets(input, sizeof(input), stdin);
+            answer = input[0];
             if (answer == 'k')
             {
               writeCal(fo, coeff, irun[i], idet);
             }
             else
               fprintf(fo, "%5d%5d%5d%9.3f%10.6f\n", irun[i], idet, 2, 0.0, 1.0);
-            answer = getchar();
           }
         }
 
@@ -223,7 +225,8 @@ int main(int argc, char **argv)
           if (answer != 'a')
           {
             printf("Going to next? [y]/n/a\t");
-            answer = getchar();
+            fgets(input, sizeof(input), stdin);
+            answer = input[0];
           }
         }
 
@@ -236,14 +239,16 @@ int main(int argc, char **argv)
             if (answer != 'a')
             {
               printf("Going to next? [y]/n/a\t");
-              answer = getchar();
+              fgets(input, sizeof(input), stdin);
+              answer = input[0];
             }
           }
           else if (answer != 'a')
           {
             printf("\n%2s#%02d.%04d\t OK (cal/raw = %.2lf/%.2lf)\t", name, idet, irun[i], chiTest_cal, chiTest);
             printf("Going to next? [y]/n/a\t");
-            answer = getchar();
+            fgets(input, sizeof(input), stdin);
+            answer = input[0];
           }
         }
 
